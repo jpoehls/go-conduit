@@ -1,6 +1,6 @@
 # Conduit
 
-A Go package for connecting to Phabricator via the Conduit API.
+A Go package for connecting to [Phabricator](http://phabricator.org) via the [Conduit](https://secure.phabricator.com/book/phabdev/article/conduit/) API.
 
 [Documentation](http://godoc.org/github.com/jpoehls/go-conduit)
 
