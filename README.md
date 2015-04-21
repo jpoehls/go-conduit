@@ -26,7 +26,9 @@ Any conduit error response will be returned as a
 `conduit.ConduitError` type
 
 ```
-_, err := conduit.Dial("bad url", "bad user", "bad cert")
+conn, err := conduit.Dial("https://secure.phabricator.com")
+err = conn.Connect("USERNAME", "CERTIFICATE")
+
 ce, ok := err.(*conduit.ConduitError)
 if ok {
 	println("code: " + ce.Code())
