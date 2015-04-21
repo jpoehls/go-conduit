@@ -1,13 +1,15 @@
 package conduit
 
-type pPhidLookup struct {
-	Names   []string     `json:"names"`
-	Conduit *conduitAuth `json:"__conduit__"`
+type pPHIDLookup struct {
+	Names       []string     `json:"names"`
+	ConduitAuth *conduitAuth `json:"__conduit__"`
 }
 
-type PhidLookupResponse map[string]*PhidLookupResult
+// PHIDLookupResponse is the result of phid.lookup operations.
+type PHIDLookupResponse map[string]*PHIDResult
 
-type PhidLookupResult struct {
+// PHIDResult is a result item of phid operations.
+type PHIDResult struct {
 	PHID     string `json:"phid"`
 	Uri      string `json:"uri"`
 	TypeName string `json:"typeName"`
@@ -17,16 +19,14 @@ type PhidLookupResult struct {
 	Status   string `json:"status"`
 }
 
-func (c *Conn) PhidLookup(names []string) (PhidLookupResponse, error) {
-	p := &pPhidLookup{
-		Names: names,
-		Conduit: &conduitAuth{
-			SessionKey:   c.sessionKey,
-			ConnectionID: c.connectionID,
-		},
+// PHIDLookup calls the phid.lookup endpoint.
+func (c *Conn) PHIDLookup(names []string) (PHIDLookupResponse, error) {
+	p := &pPHIDLookup{
+		Names:       names,
+		ConduitAuth: c.conduitAuth,
 	}
 
-	var r PhidLookupResponse
+	var r PHIDLookupResponse
 	err := call(c.host+"/api/phid.lookup", p, &r)
 
 	if err != nil {
@@ -36,12 +36,47 @@ func (c *Conn) PhidLookup(names []string) (PhidLookupResponse, error) {
 	return r, nil
 }
 
-func (c *Conn) PhidLookupSingle(name string) (*PhidLookupResult, error) {
-	resp, err := c.PhidLookup([]string{name})
+// PHIDLookupSingle calls the phid.lookup endpoint with a single name.
+func (c *Conn) PHIDLookupSingle(name string) (*PHIDResult, error) {
+	resp, err := c.PHIDLookup([]string{name})
 	if err != nil {
 		return nil, err
 	}
 
 	r := resp[name]
+	return r, nil
+}
+
+type pPHIDQuery struct {
+	PHIDs       []string     `json:"phids"`
+	ConduitAuth *conduitAuth `json:"__conduit__"`
+}
+
+// PHIDQueryResponse is the result of phid.query operations.
+type PHIDQueryResponse map[string]*PHIDResult
+
+// PHIDQuery calls the phid.query endpoint.
+func (c *Conn) PHIDQuery(phids []string) (PHIDQueryResponse, error) {
+	p := &pPHIDQuery{
+		PHIDs:       phids,
+		ConduitAuth: c.conduitAuth,
+	}
+
+	var r PHIDQueryResponse
+	if err := call(c.host+"/api/phid.query", p, &r); err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}
+
+// PHIDQuerySingle calls the phid.query endpoint with a single phid.
+func (c *Conn) PHIDQuerySingle(phid string) (*PHIDResult, error) {
+	resp, err := c.PHIDQuery([]string{phid})
+	if err != nil {
+		return nil, err
+	}
+
+	r := resp[phid]
 	return r, nil
 }

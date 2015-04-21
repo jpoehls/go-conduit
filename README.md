@@ -9,7 +9,9 @@ A Go package for connecting to Phabricator via the Conduit API.
 ### Connecting
 
 ```
-conn, err := conduit.Dial("https://secure.phabricator.com", "USERNAME", "CONDUIT_CERTIFICATE")
+conn, err := conduit.Dial("https://secure.phabricator.com")
+
+err = conn.Connect("USERNAME", "CERTIFICATE")
 ```
 
 ### Errors
@@ -34,9 +36,19 @@ if conduit.IsConduitError(err) {
 ### phid.lookup
 
 ```
-result, err := conduit.PhidLookup([]string{"T1", "D1"})
+result, err := conduit.PHIDLookup([]string{"T1", "D1"})
 ```
 
 ```
-result, err := conduit.PhidLookupSingle("T1")
+result, err := conduit.PHIDLookupSingle("T1")
+```
+
+### phid.query
+
+```
+result, err := conduit.PHIDQuery([]string{"PHID-DREV-gumr6ra5wm32ez46qo3f", "PHID-DREV-gumr6ra5wm32ez483827"})
+```
+
+```
+result, err := conduit.PHIDQuerySingle("PHID-DREV-gumr6ra5wm32ez46qo3f")
 ```
