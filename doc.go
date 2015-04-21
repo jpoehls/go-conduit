@@ -1,3 +1,3 @@
 // Package conduit provides a client
-// for Phabricators Conduit API.
+// for Phabricator's Conduit API.
 package conduit
