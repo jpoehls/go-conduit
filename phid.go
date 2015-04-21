@@ -11,7 +11,7 @@ type PHIDLookupResponse map[string]*PHIDResult
 // PHIDResult is a result item of phid operations.
 type PHIDResult struct {
 	PHID     string `json:"phid"`
-	Uri      string `json:"uri"`
+	URI      string `json:"uri"`
 	TypeName string `json:"typeName"`
 	Type     string `json:"type"`
 	Name     string `json:"name"`

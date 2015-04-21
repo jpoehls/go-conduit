@@ -29,22 +29,22 @@ type ConduitError struct {
 }
 
 // Code returns the error_code returned in a conduit response.
-func (e *ConduitError) Code() string {
-	return e.code
+func (err *ConduitError) Code() string {
+	return err.code
 }
 
 // Info returns the error_info returned in a conduit response.
-func (e *ConduitError) Info() string {
-	return e.info
+func (err *ConduitError) Info() string {
+	return err.info
 }
 
-func (e *ConduitError) Error() string {
-	return e.code + ": " + e.info
+func (err *ConduitError) Error() string {
+	return err.code + ": " + err.info
 }
 
-// IsConduitError checks whether or not e is a ConduitError.
-func IsConduitError(e error) bool {
-	_, ok := e.(*ConduitError)
+// IsConduitError checks whether or not err is a ConduitError.
+func IsConduitError(err error) bool {
+	_, ok := err.(*ConduitError)
 	return ok
 }
 
