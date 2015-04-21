@@ -4,6 +4,12 @@ A Go package for connecting to Phabricator via the Conduit API.
 
 [Documentation](http://godoc.org/github.com/jpoehls/go-conduit)
 
+## Getting a conduit certificate
+
+This library uses `conduit.connect` to establish an authenticated session. You'll need to have a valid username and conduit certificate in order to use this API.
+
+To get your conduit certificate, go to `https://{MY_PHABRICATOR_URL}/settings/panel/conduit` and copy/paste.
+
 ## Usage
 
 ### Connecting
@@ -46,7 +52,7 @@ result, err := conduit.PHIDLookupSingle("T1")
 ### phid.query
 
 ```
-result, err := conduit.PHIDQuery([]string{"PHID-DREV-gumr6ra5wm32ez46qo3f", "PHID-DREV-gumr6ra5wm32ez483827"})
+result, err := conduit.PHIDQuery([]string{"PHID-DREV-gumr6ra5wm32ez46qo3f", "..."})
 ```
 
 ```
