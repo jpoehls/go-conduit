@@ -60,7 +60,7 @@ func (c *Conn) Connect(user, cert string) error {
 
 	var resp conduitConnectResponse
 
-	err := c.Call("conduit.connect", &pConduitConnect{
+	if err := c.Call("conduit.connect", &pConduitConnect{
 		Client:            c.dialer.ClientName,
 		ClientVersion:     c.dialer.ClientVersion,
 		ClientDescription: c.dialer.ClientDescription,
@@ -68,9 +68,7 @@ func (c *Conn) Connect(user, cert string) error {
 		User:              c.user,
 		AuthToken:         authToken,
 		AuthSignature:     authSig,
-	}, &resp)
-
-	if err != nil {
+	}, &resp); err != nil {
 		return err
 	}
 

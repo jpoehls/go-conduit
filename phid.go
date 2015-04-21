@@ -27,9 +27,7 @@ func (c *Conn) PHIDLookup(names []string) (PHIDLookupResponse, error) {
 	}
 
 	var r PHIDLookupResponse
-	err := c.Call("phid.lookup", p, &r)
-
-	if err != nil {
+	if err := c.Call("phid.lookup", p, &r); err != nil {
 		return nil, err
 	}
 
