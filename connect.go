@@ -13,7 +13,7 @@ type Conn struct {
 	host         string
 	user         string
 	capabilities *conduitCapabilitiesResponse
-	conduitAuth  *conduitAuth
+	Session      *Session
 	dialer       *Dialer
 }
 
@@ -44,10 +44,11 @@ type conduitConnectResponse struct {
 	ConnectionID int64  `json:"connectionID"`
 }
 
-type conduitAuth struct {
+// Session is the conduit session state
+// that will be sent in the JSON params as __conduit__.
+type Session struct {
 	SessionKey   string `json:"sessionKey"`
 	ConnectionID int64  `json:"connectionID"`
-	UserPHID     string `json:"userPHID"`
 }
 
 // Connect calls conduit.connect to open an authenticated
@@ -59,7 +60,7 @@ func (c *Conn) Connect(user, cert string) error {
 
 	var resp conduitConnectResponse
 
-	err := call(c.host+"/api/conduit.connect", &pConduitConnect{
+	err := c.Call("conduit.connect", &pConduitConnect{
 		Client:            c.dialer.ClientName,
 		ClientVersion:     c.dialer.ClientVersion,
 		ClientDescription: c.dialer.ClientDescription,
@@ -73,10 +74,22 @@ func (c *Conn) Connect(user, cert string) error {
 		return err
 	}
 
-	c.conduitAuth = &conduitAuth{
+	c.Session = &Session{
 		SessionKey:   resp.SessionKey,
 		ConnectionID: resp.ConnectionID,
 	}
 
 	return nil
+}
+
+// Call allows you to make a raw conduit method call.
+// Params will be marshalled as JSON and the result JSON
+// will be unmarshalled into the result interface{}.
+//
+// This is primarily useful for calling conduit endpoints that
+// aren't specifically supported by other methods in this
+// package.
+func (c *Conn) Call(method string, params interface{}, result interface{}) error {
+	err := call(c.host+"/api/"+method, params, &result)
+	return err
 }

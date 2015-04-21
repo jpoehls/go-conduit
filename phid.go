@@ -1,8 +1,8 @@
 package conduit
 
 type pPHIDLookup struct {
-	Names       []string     `json:"names"`
-	ConduitAuth *conduitAuth `json:"__conduit__"`
+	Names   []string `json:"names"`
+	Session *Session `json:"__conduit__"`
 }
 
 // PHIDLookupResponse is the result of phid.lookup operations.
@@ -22,12 +22,12 @@ type PHIDResult struct {
 // PHIDLookup calls the phid.lookup endpoint.
 func (c *Conn) PHIDLookup(names []string) (PHIDLookupResponse, error) {
 	p := &pPHIDLookup{
-		Names:       names,
-		ConduitAuth: c.conduitAuth,
+		Names:   names,
+		Session: c.Session,
 	}
 
 	var r PHIDLookupResponse
-	err := call(c.host+"/api/phid.lookup", p, &r)
+	err := c.Call("phid.lookup", p, &r)
 
 	if err != nil {
 		return nil, err
@@ -48,8 +48,8 @@ func (c *Conn) PHIDLookupSingle(name string) (*PHIDResult, error) {
 }
 
 type pPHIDQuery struct {
-	PHIDs       []string     `json:"phids"`
-	ConduitAuth *conduitAuth `json:"__conduit__"`
+	PHIDs   []string `json:"phids"`
+	Session *Session `json:"__conduit__"`
 }
 
 // PHIDQueryResponse is the result of phid.query operations.
@@ -58,12 +58,12 @@ type PHIDQueryResponse map[string]*PHIDResult
 // PHIDQuery calls the phid.query endpoint.
 func (c *Conn) PHIDQuery(phids []string) (PHIDQueryResponse, error) {
 	p := &pPHIDQuery{
-		PHIDs:       phids,
-		ConduitAuth: c.conduitAuth,
+		PHIDs:   phids,
+		Session: c.Session,
 	}
 
 	var r PHIDQueryResponse
-	if err := call(c.host+"/api/phid.query", p, &r); err != nil {
+	if err := c.Call("phid.query", p, &r); err != nil {
 		return nil, err
 	}
 
