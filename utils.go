@@ -6,7 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
+	"testing"
 )
 
 // containsString checks whether s contains e.
@@ -86,4 +88,11 @@ func call(endpointURL string, params interface{}, result interface{}) error {
 	}
 
 	return nil
+}
+
+/* Test Helpers */
+func expect(t *testing.T, a interface{}, b interface{}) {
+	if a != b {
+		t.Errorf("Expected %v (type %v) - Got %v (type %v)", b, reflect.TypeOf(b), a, reflect.TypeOf(a))
+	}
 }
