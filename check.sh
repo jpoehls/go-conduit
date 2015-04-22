@@ -1,5 +1,3 @@
 #!/bin/sh
 
-golint ./
-go vet ./
-go test
+go build && go vet ./ && golint ./ && go test
