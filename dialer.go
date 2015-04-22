@@ -50,6 +50,13 @@ type Dialer struct {
 	ClientDescription string
 }
 
+type conduitCapabilitiesResponse struct {
+	Authentication []string `json:"authentication"`
+	Signatures     []string `json:"signatures"`
+	Input          []string `json:"input"`
+	Output         []string `json:"output"`
+}
+
 // Dial connects to conduit and confirms the API capabilities
 // for future calls.
 func Dial(host string) (*Conn, error) {
