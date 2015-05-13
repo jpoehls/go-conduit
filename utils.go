@@ -2,13 +2,14 @@ package conduit
 
 import (
 	"encoding/json"
-	"github.com/karlseguin/typed"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/karlseguin/typed"
 )
 
 // containsString checks whether s contains e.
@@ -81,7 +82,7 @@ func call(endpointURL string, params interface{}, result interface{}) error {
 		return err
 	}
 
-	if result != nil {
+	if resultBytes != nil {
 		if err = json.Unmarshal(resultBytes, &result); err != nil {
 			return err
 		}
