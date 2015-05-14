@@ -82,7 +82,7 @@ func call(endpointURL string, params interface{}, result interface{}) error {
 		return err
 	}
 
-	if resultBytes != nil {
+	if result != nil && resultBytes != nil {
 		if err = json.Unmarshal(resultBytes, &result); err != nil {
 			return err
 		}
