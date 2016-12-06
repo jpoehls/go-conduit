@@ -78,7 +78,7 @@ func TestConnect(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if conn.host != "https://code.interworks.com" {
+	if conn.host != testHost {
 		t.Error("bad host")
 	}
 
