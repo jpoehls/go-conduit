@@ -16,13 +16,6 @@ func init() {
 	testCert = os.Getenv("GOCONDUIT_CERT")
 }
 
-type conduitCapabilitiesResponse struct {
-	Authentication []string `json:"authentication"`
-	Signatures     []string `json:"signatures"`
-	Input          []string `json:"input"`
-	Output         []string `json:"output"`
-}
-
 func TestCall(t *testing.T) {
 	conn, err := Dial(testHost)
 	if err != nil {
