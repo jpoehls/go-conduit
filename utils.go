@@ -2,15 +2,20 @@ package conduit
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"reflect"
 	"strings"
 	"testing"
-
-	"github.com/karlseguin/typed"
 )
+
+type genericResult interface{}
+
+type conduitGenericResponse struct {
+	ErrorCode string      `json:"error_code"`
+	ErrorInfo string      `json:"error_info"`
+	Result    genericResult `json:"result"`
+}
 
 // containsString checks whether s contains e.
 func containsString(s []string, e string) bool {
@@ -27,6 +32,7 @@ func containsString(s []string, e string) bool {
 // and unmarshalling the JSON result into the specified
 // result interface{}.
 func call(endpointURL string, params interface{}, result interface{}) error {
+	var genericResponse conduitGenericResponse
 	form := url.Values{}
 	form.Add("output", "json")
 
@@ -58,26 +64,21 @@ func call(endpointURL string, params interface{}, result interface{}) error {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	jsonDecoder := json.NewDecoder(resp.Body)
+	jsonDecoder.UseNumber()
+	if err = jsonDecoder.Decode(&genericResponse); err != nil {
 		return err
 	}
-
-	jsonBody, err := typed.Json(body)
-	if err != nil {
-		return err
-	}
-
 	// parse any error conduit returned first
-	if jsonBody.String("error_code") != "" {
+	if genericResponse.ErrorCode != "" {
 		return &ConduitError{
-			code: jsonBody.String("error_code"),
-			info: jsonBody.String("error_info"),
+			code: genericResponse.ErrorCode,
+			info: genericResponse.ErrorInfo,
 		}
 	}
 
 	// if no error, parse the expected result
-	resultBytes, err := jsonBody.ToBytes("result")
+	resultBytes, err := json.Marshal(genericResponse.Result)
 	if err != nil {
 		return err
 	}
@@ -87,7 +88,6 @@ func call(endpointURL string, params interface{}, result interface{}) error {
 			return err
 		}
 	}
-
 	return nil
 }
 
